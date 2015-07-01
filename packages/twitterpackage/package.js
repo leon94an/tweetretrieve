@@ -13,11 +13,12 @@ Package.onUse(function(api) {
         'mongo'
     ], ['client','server']);
 
-    api.addFiles(['twit.js','fibers.js'], ['server']);
+    api.addFiles(['twit.js'], ['server']);
 
     api.addFiles([
         'twitterpackage.html',
-        'twitterpackage.js'
+        'twitterpackage.js',
+        'tweetitem.html'
     ], ['client', 'server']);
 
 });

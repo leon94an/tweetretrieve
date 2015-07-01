@@ -1,12 +1,8 @@
 <template name="twitterPackage">
     <div class="page-header">
-        <div class="row">
-            <div class="col-md-8 col-sm-12 col-xs-12">Filler</div>
-            <div class="col-md-4 col-sm-12 col-xs-12">
-                <div>
-                    <a class="find btn" href="#">TEST</a>
-                </div>
-            </div>
-        </div>
+        <a class="find" href="#">TEST</a>
     </div>
+    <ul >
+        {{#each tweets}} {{> tweetItem}} {{/each}}
+    </ul>
 </template>
