@@ -10,15 +10,16 @@ Package.onUse(function(api) {
     api.use([
         'templating',
         'coffeescript',
-        'mongo'
+        'mongo',
     ], ['client','server']);
 
     api.addFiles(['twit.js'], ['server']);
 
     api.addFiles([
         'twitterpackage.html',
+        'tweetitem.html',
+        'tweetsubmit.html',
         'twitterpackage.js',
-        'tweetitem.html'
     ], ['client', 'server']);
 
 });

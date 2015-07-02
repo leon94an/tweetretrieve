@@ -1,8 +1,8 @@
 <template name="twitterPackage">
     <div class="page-header">
-        <a class="find" href="#">TEST</a>
+        {{> tweetSubmit}}
     </div>
-    <ul >
+    <ul class="list-group">
         {{#each tweets}} {{> tweetItem}} {{/each}}
     </ul>
 </template>
