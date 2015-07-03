@@ -3,24 +3,16 @@ Tweets = new Mongo.Collection("tweets")
 
 
 if (Meteor.isServer) {
+    
+    var T;
+    var myKey = {
+                consumer_key: 'CbqeFfqUzsE9JgmmLTjAebyt7', // API key
+                consumer_secret: '5Q6XpRSj261SMEaNhekzlviIIj1nNcNd3A2vgpEeLXrXT3GbK5', // API secret
+                access_token: '3256361616-o13asDcdneszFfT35PRgHy0pxVtHYPRgmFmc007',
+                access_token_secret: 'fqqB9nArN9dlANpiS1GwtMTfrFcMiCmaRvdeODe1kowqX'
+            }
+
     var getTweets = function(username, count, callback) {
-        Tweets.remove({});
-        var T = new Twit({
-            consumer_key: 'CbqeFfqUzsE9JgmmLTjAebyt7', // API key
-            consumer_secret: '5Q6XpRSj261SMEaNhekzlviIIj1nNcNd3A2vgpEeLXrXT3GbK5', // API secret
-            access_token: '3256361616-o13asDcdneszFfT35PRgHy0pxVtHYPRgmFmc007',
-            access_token_secret: 'fqqB9nArN9dlANpiS1GwtMTfrFcMiCmaRvdeODe1kowqX'
-        });
-
-
-        // T.get('search/tweets', {
-        //         q: "plebs",
-        //         count: 10,
-        //     },
-        //     function(err, data) {
-        //         callback(err, data);
-        //     }
-        // );
         T.get('statuses/user_timeline', {
                 screen_name: username,
                 count: count
@@ -29,29 +21,31 @@ if (Meteor.isServer) {
                 callback(err, data);
             }
         );
-
     }
 
 
     var storeTweets = function(response) {
-        // var array = response.statuses;
         var array = response;
         for (var i = 0; i < array.length; i++) {
             Tweets.insert({
+                username: array[i].user.name,
+                screen_name: array[i].user.screen_name,
                 message: array[i].text,
                 time: array[i].created_at
             });
         }
     }
 
-    // Meteor.publish("tweets", function() {
-    //     return Tweets.find();
-    // });
+
+    var init = function(keys){
+        T = new Twit(keys);
+    }
 
     Meteor.methods({
         grabResults: function(twittername, count) {
             var twe = Meteor.wrapAsync(getTweets);
             try {
+                init(myKey);
                 var tweeters = twe(twittername, count);
                 storeTweets(tweeters);
             } catch (error) {
@@ -63,33 +57,25 @@ if (Meteor.isServer) {
 }
 
 
-
 if (Meteor.isClient) {
-    // Meteor.subscribe("tweets");
-    Template.tweetSubmit.events({
-        'submit form': function(e, template) {
-            e.preventDefault();
-            var $target = $(e.target);
-            var username = $target.find('[name=twitterName]').val();
-            var count = $target.find('[name=count]').val();
-            if (username != "" && count != "") {
-                Meteor.call("grabResults", username, count, function(err) {
-                    if (err) {
-                        console.log(err);
-                    }
-                });
+
+    Template.twitterPackage.onRendered(function(){
+        var username = this.data.query;
+        var count = this.data.count;
+        console.log(username);
+        console.log(count);
+        Meteor.call("grabResults", username, count, function(err){
+            if(err){
+                console.log(err);
             }
-            else{
-                console.log("forms are not filled");
-            }
-            template.find("form").reset();
-        }
-    });
+        })
+    })
 
     Template.twitterPackage.helpers({
         tweets: function() {
-            return Tweets.find();
+            return Tweets.find({screen_name:this.query});
         }
     })
+
 
 }
