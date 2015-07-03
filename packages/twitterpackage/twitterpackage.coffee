@@ -1,11 +1,9 @@
 Tweets = new (Mongo.Collection)('tweets')
 if Meteor.isServer
   T = undefined
+  #key goes here
   myKey = 
-    consumer_key: 'CbqeFfqUzsE9JgmmLTjAebyt7'
-    consumer_secret: '5Q6XpRSj261SMEaNhekzlviIIj1nNcNd3A2vgpEeLXrXT3GbK5'
-    access_token: '3256361616-o13asDcdneszFfT35PRgHy0pxVtHYPRgmFmc007'
-    access_token_secret: 'fqqB9nArN9dlANpiS1GwtMTfrFcMiCmaRvdeODe1kowqX'
+    
 
   getTweets = (username, count, callback) ->
     T.get 'statuses/user_timeline', {
