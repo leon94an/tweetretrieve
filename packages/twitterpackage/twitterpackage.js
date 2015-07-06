@@ -1,16 +1,22 @@
 Tweets = new Mongo.Collection("tweets")
 
-
-
 if (Meteor.isServer) {
-    
-    var T;
+
     var myKey = {
-                consumer_key: 'CbqeFfqUzsE9JgmmLTjAebyt7', // API key
-                consumer_secret: '5Q6XpRSj261SMEaNhekzlviIIj1nNcNd3A2vgpEeLXrXT3GbK5', // API secret
-                access_token: '3256361616-o13asDcdneszFfT35PRgHy0pxVtHYPRgmFmc007',
-                access_token_secret: 'fqqB9nArN9dlANpiS1GwtMTfrFcMiCmaRvdeODe1kowqX'
-            }
+        consumer_key: 'xxx',
+        consumer_secret: 'xxx',
+        access_token: 'xxx',
+        access_token_secret: 'xxx'
+
+    }
+   
+    twitterPackage = {
+        init: function(userKey) {
+            myKey = userKey;
+        }
+    };
+
+    var T;
 
     var getTweets = function(username, count, callback) {
         T.get('statuses/user_timeline', {
@@ -37,7 +43,7 @@ if (Meteor.isServer) {
     }
 
 
-    var init = function(keys){
+    var init = function(keys) {
         T = new Twit(keys);
     }
 
@@ -59,13 +65,11 @@ if (Meteor.isServer) {
 
 if (Meteor.isClient) {
 
-    Template.twitterPackage.onRendered(function(){
+    Template.twitterPackage.onRendered(function() {
         var username = this.data.query;
         var count = this.data.count;
-        console.log(username);
-        console.log(count);
-        Meteor.call("grabResults", username, count, function(err){
-            if(err){
+        Meteor.call("grabResults", username, count, function(err) {
+            if (err) {
                 console.log(err);
             }
         })
@@ -73,7 +77,9 @@ if (Meteor.isClient) {
 
     Template.twitterPackage.helpers({
         tweets: function() {
-            return Tweets.find({screen_name:this.query});
+            return Tweets.find({
+                screen_name: this.query
+            }, { limit: this.count});
         }
     })
 

@@ -19,9 +19,10 @@ Package.onUse(function(api) {
         'twitterpackage.html',
         'tweetitem.html',
         'tweetsubmit.html',
-        'twitterpackage.coffee',
+        'twitterpackage.js',
     ], ['client', 'server']);
 
+    api.export('twitterPackage',['server']);
 });
 
 // Package.onTest(function(api) {
