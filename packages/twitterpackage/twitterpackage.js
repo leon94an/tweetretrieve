@@ -12,12 +12,14 @@ if (Meteor.isServer) {
 
     var T;
     var cacheTime;
+    var maxTweets;
 
 
     twitterPackage = {
-        init: function(userKey, time) {
+        init: function(userKey, time,max) {
             T= new Twit(userKey);
             cacheTime=time.time;
+            maxTweets=max.maximum;
         }
 
     };
@@ -53,28 +55,30 @@ if (Meteor.isServer) {
     tweetCache = {};
 
     Meteor.methods({
-        grabResults: function(twittername, count) {
+        grabResults: function(twittername) {
             var twe = Meteor.wrapAsync(getTweets);
             try { 
+                var num= Tweets.find({screen_name: twittername}).count();
+                var diff= maxTweets-num;
                 if (typeof tweetCache[twittername] == 'undefined') { 
                     var currTime=new Date();
                     tweetCache[twittername] = currTime;
-                    var tweeters = twe(twittername, count);
+                    var tweeters = twe(twittername, diff);
                     storeTweets(tweeters);   
                 }     
-                else if(Math.abs(new Date().getTime() - tweetCache[twittername]) > cacheTime ){ 
+                else if((Math.abs(new Date().getTime() - tweetCache[twittername]) > cacheTime) || num > maxTweets ){ 
                     console.log("cache invalidated",tweetCache,twittername);
                     Tweets.remove({
                         screen_name: twittername
                     });
                     tweetCache[twittername] = new Date();
-                    var tweeters = twe(twittername, count);
+                    var tweeters = twe(twittername, diff);
                     storeTweets(tweeters);
                 }  
             } catch (error) {
                 console.log("Could not find request.")
             }
-            return false;
+            return false; 
         }
     });
 }
@@ -84,8 +88,7 @@ if (Meteor.isClient) {
 
     Template.twitterPackage.onRendered(function() {
         var username = this.data.query;
-        var count = this.data.count;
-        Meteor.call("grabResults", username, count, function(err) {
+        Meteor.call("grabResults", username, function(err) {
             if (err) {
                 console.log(err);
             }

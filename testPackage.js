@@ -4,5 +4,5 @@ if(Meteor.isServer){
     consumer_secret: '5Q6XpRSj261SMEaNhekzlviIIj1nNcNd3A2vgpEeLXrXT3GbK5', // API secret
     access_token: '3256361616-o13asDcdneszFfT35PRgHy0pxVtHYPRgmFmc007',
     access_token_secret: 'fqqB9nArN9dlANpiS1GwtMTfrFcMiCmaRvdeODe1kowqX'
-	}, {time:5000})
+	}, {time:5000}, {maximum: 100})
 }
