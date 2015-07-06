@@ -2,5 +2,20 @@
 
 <body>
     <h1>TwitterFeed</h1>
-    {{>twitterPackage query="VICE" count=5}}
+    <div class="row">
+        <div class="col-sm-6">
+            {{>twitterPackage query="VICE" count=5}}
+        </div>
+        <div class="col-sm-6">
+            {{>twitterPackage query="vox" count=5}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            {{>twitterPackage query="VICE" count=10}}
+        </div>
+        <div class="col-sm-6">
+            {{>twitterPackage query="vox" count=10}}
+        </div>
+    </div>
 </body>

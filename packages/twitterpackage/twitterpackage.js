@@ -9,14 +9,18 @@ if (Meteor.isServer) {
         access_token_secret: 'xxx'
 
     }
-   
-    twitterPackage = {
-        init: function(userKey) {
-            myKey = userKey;
-        }
-    };
 
     var T;
+    var cacheTime;
+
+
+    twitterPackage = {
+        init: function(userKey, time) {
+            T= new Twit(userKey);
+            cacheTime=time.time;
+        }
+
+    };
 
     var getTweets = function(username, count, callback) {
         T.get('statuses/user_timeline', {
@@ -37,23 +41,36 @@ if (Meteor.isServer) {
                 username: array[i].user.name,
                 screen_name: array[i].user.screen_name,
                 message: array[i].text,
-                time: array[i].created_at
+                time: array[i].created_at,
+                image: array[i].user.profile_image_url
             });
         }
     }
+ 
 
 
-    var init = function(keys) {
-        T = new Twit(keys);
-    }
+
+    tweetCache = {};
 
     Meteor.methods({
         grabResults: function(twittername, count) {
             var twe = Meteor.wrapAsync(getTweets);
-            try {
-                init(myKey);
-                var tweeters = twe(twittername, count);
-                storeTweets(tweeters);
+            try { 
+                if (typeof tweetCache[twittername] == 'undefined') { 
+                    var currTime=new Date();
+                    tweetCache[twittername] = currTime;
+                    var tweeters = twe(twittername, count);
+                    storeTweets(tweeters);   
+                }     
+                else if(Math.abs(new Date().getTime() - tweetCache[twittername]) > cacheTime ){ 
+                    console.log("cache invalidated",tweetCache,twittername);
+                    Tweets.remove({
+                        screen_name: twittername
+                    });
+                    tweetCache[twittername] = new Date();
+                    var tweeters = twe(twittername, count);
+                    storeTweets(tweeters);
+                }  
             } catch (error) {
                 console.log("Could not find request.")
             }
@@ -79,7 +96,42 @@ if (Meteor.isClient) {
         tweets: function() {
             return Tweets.find({
                 screen_name: this.query
-            }, { limit: this.count});
+            }, {
+                limit: this.count
+            });
+        }
+    })
+
+    function Parser(text) {
+
+        var html = text;
+
+        var urlRegex = /((ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?)/gi;
+        var hashTagRegex = /#([^ ]+)/gi;
+
+        this.linkifyURLs = function() {
+            html = html.replace(urlRegex, '<a href="$1">$1</a>');
+        };
+        this.linkifyHashTags = function() {
+            html = html.replace(hashTagRegex, '<a href="http://twitter.com/#!/search?q=%23$1">#$1</a>');
+        };
+
+        this.getHTML = function() {
+            return html;
+        };
+
+    }
+
+    Template.tweetItem.helpers({
+        message: function() {
+            var parser = new Parser(this.message);
+            parser.linkifyURLs();
+            parser.linkifyHashTags();
+            return parser.getHTML();
+        },
+        time: function() {
+            var time = new Date(this.time);
+            return time;
         }
     })
 
