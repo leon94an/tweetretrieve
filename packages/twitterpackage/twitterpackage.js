@@ -2,6 +2,14 @@ Tweets = new Mongo.Collection("tweets")
 
 if (Meteor.isServer) {
 
+    Meteor.publish("tweets", function(options){
+        return Tweets.find({
+            screen_name: options.screen_name
+        },{
+            limit: options.count
+        });
+    });
+
     var myKey = {
         consumer_key: 'xxx',
         consumer_secret: 'xxx',
@@ -24,10 +32,10 @@ if (Meteor.isServer) {
 
     };
 
-    var getTweets = function(username, count, callback) {
+    var getTweets = function(username, callback) {
         T.get('statuses/user_timeline', {
                 screen_name: username,
-                count: count
+                count: 100
             },
             function(err, data) {
                 callback(err, data);
@@ -54,25 +62,24 @@ if (Meteor.isServer) {
 
     tweetCache = {};
 
-    Meteor.methods({
+    Meteor.methods({ 
         grabResults: function(twittername) {
             var twe = Meteor.wrapAsync(getTweets);
             try { 
-                var num= Tweets.find({screen_name: twittername}).count();
-                var diff= maxTweets-num;
+                // var num= Tweets.find({screen_name: twittername}).count();
+                // var diff= maxTweets-num;
                 if (typeof tweetCache[twittername] == 'undefined') { 
                     var currTime=new Date();
                     tweetCache[twittername] = currTime;
-                    var tweeters = twe(twittername, diff);
+                    var tweeters = twe(twittername);
                     storeTweets(tweeters);   
                 }     
-                else if((Math.abs(new Date().getTime() - tweetCache[twittername]) > cacheTime) || num > maxTweets ){ 
-                    console.log("cache invalidated",tweetCache,twittername);
+                else if((Math.abs(new Date().getTime() - tweetCache[twittername]) > cacheTime)){ 
                     Tweets.remove({
                         screen_name: twittername
                     });
                     tweetCache[twittername] = new Date();
-                    var tweeters = twe(twittername, diff);
+                    var tweeters = twe(twittername);
                     storeTweets(tweeters);
                 }  
             } catch (error) {
@@ -85,6 +92,13 @@ if (Meteor.isServer) {
 
 
 if (Meteor.isClient) {
+
+    Template.twitterPackage.onCreated(function() {
+        this.subscribe("tweets", {
+            screen_name: this.data.query,
+            count: this.data.count
+        });
+    })
 
     Template.twitterPackage.onRendered(function() {
         var username = this.data.query;
