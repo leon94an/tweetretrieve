@@ -14,8 +14,8 @@ On the Server-side:
 ```javascript
 if (Meteor.isServer) {
     tweetRetrieve.init({
-        cacheDuration: xxx, // cache duration in milliseconds
-        maximumTweets: xxx, // maximum number of stored tweets per query
+        cacheDuration: xxx, // optional: cache duration in milliseconds
+        maximumTweets: xxx, // optional: maximum number of stored tweets per query
         oath: {
             consumer_key: 'xxx', // API key
             consumer_secret: 'xxx', // API secret
@@ -25,7 +25,7 @@ if (Meteor.isServer) {
     });
 }
 ```
-OAuth authentication keys need to be provided by the user in order to receive access to the twitter API. This can be within the project level using the twitterpackage.init() function. Additionally, the cache duration and maximum number of stored tweets for queries can be modified. 
+OAuth authentication keys need to be provided by the user in order to receive access to the twitter API. This can be within the project level using the twitterpackage.init() function. Additionally, the cache duration and maximum number of stored tweets for queries can be modified.
 
 Queries can be returned by calling the tweetRetrieve template as such:
 ```
