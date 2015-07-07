@@ -1,7 +1,7 @@
 Tweets = new Mongo.Collection("tweets")
 
 if (Meteor.isServer) {
-
+    Twit = Npm.require('twit');
     Meteor.publish("tweets", function(options) {
         return Tweets.find({
             screen_name: options.screen_name

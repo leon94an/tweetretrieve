@@ -1,7 +1,7 @@
 Package.describe({
     name: 'leon94an:twitterpackage',
     version: '0.0.1',
-    summary: 'clientside twitterfeed retriever',
+    summary: 'twitterfeed retriever',
 });
 
 Package.onUse(function(api) {
@@ -13,13 +13,9 @@ Package.onUse(function(api) {
         'mongo',
     ], ['client','server']);
 
-    api.addFiles(['twit.js'], ['server']);
-
     api.addFiles([
         'twitterpackage.html',
-        'tweetitem.html',
-        'tweetsubmit.html',
-        'twitterpackage.js',
+        'twitterpackage.js'
     ], ['client', 'server']);
 
     api.export('twitterPackage',['server']);
