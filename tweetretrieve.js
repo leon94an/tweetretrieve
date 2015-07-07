@@ -1,6 +1,7 @@
 Tweets = new Mongo.Collection("tweets")
 
 if (Meteor.isServer) {
+
     Twit = Npm.require('twit');
     Meteor.publish("tweets", function(options) {
         return Tweets.find({
@@ -16,18 +17,18 @@ if (Meteor.isServer) {
 
 
     tweetRetrieve = {
-        init: function(userKey, time, max) {
-            T = new Twit(userKey);
-            cacheTime = time.time;
-            maxTweets = max.maximum;
+        init: function(entry) {
+            T = new Twit(entry.oath);
+            cacheTime = entry.cacheDuration || 1000*60;
+            maxTweets = entry.maximumTweets || 100;
         }
 
-    };
+    }; 
 
     var getTweets = function(username, callback) {
         T.get('statuses/user_timeline', {
                 screen_name: username,
-                count: 100
+                count: maxTweets
             },
             function(err, data) {
                 callback(err, data);

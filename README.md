@@ -1,10 +1,37 @@
-# TwitterPackage
+# TweetRetrieve
 
-**A Simple Twitter Feed Rretriever**
+**A Simple Twitter Feed Retriever**
 
-This TwitterPackage provides users the functionality of inputting a twitter username and returning a desired number of recent tweets. Twitter retrieval is done through [twit](https://github.com/ttezel/twit).
+This TwitterPackage provides developers a simple API for querying twitter usernames and returning a desired number of recent tweets. Twitter retrieval is done through [twit](https://github.com/ttezel/twit). Tweet retrievals are done on the server and are stored in mongo.  The number of tweets stored for a particular query is capped at 100 by default. Queries are cached for a set number milliseconds before refreshing upon request (default is 1 minutes). Both fields can be changed upon initialization. 
 
-## How to use
+## Quick Start
 
-All the functionality is included within the package. OAuth authentication keys need to be provided by the user in order to receive access to the twitter API. This can be within the project level using the twitterpackage.init({}) function. The number of tweets stored for a particular query is capped at 100.
+```meteor add leon94an:tweetretrieve```
 
+## Usage
+
+On the Server-side:
+```
+if (Meteor.isServer) {
+    tweetRetrieve.init({
+        cacheDuration: xxx,
+        maximumTweets: xxx,
+        oath: {
+            consumer_key: 'xxx', // API key
+            consumer_secret: 'xxx', // API secret
+            access_token: 'xxx',
+            access_token_secret: 'xxx'
+        }
+    });
+}
+```
+OAuth authentication keys need to be provided by the user in order to receive access to the twitter API. This can be within the project level using the twitterpackage.init() function. Additionally, the cache duration and maximum number of stored tweets for queries can be modified. 
+
+Queries can be returned by calling the tweetRetrieve template as such:
+```
+{{>tweetRetrieve query="VICE" count=5}}
+```
+The query field is the screen name of the twitter user being queried, while count is the number tweets to be returned.
+
+## Author
+Leon An, July 2015

@@ -2,7 +2,7 @@ Package.describe({
     name: 'leon94an:tweetretrieve',
     version: '0.0.1',
     summary: 'twitterfeed retriever',
-    git: 'https://leon94an@github.com/leon94an/tweetretrieve.git'
+    git: 'https://github.com/leon94an/tweetretrieve'
 });
 
 Package.onUse(function(api) {
