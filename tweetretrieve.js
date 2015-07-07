@@ -10,20 +10,12 @@ if (Meteor.isServer) {
         });
     });
 
-    var myKey = {
-        consumer_key: 'xxx',
-        consumer_secret: 'xxx',
-        access_token: 'xxx',
-        access_token_secret: 'xxx'
-
-    }
-
     var T;
     var cacheTime;
     var maxTweets;
 
 
-    twitterPackage = {
+    tweetRetrieve = {
         init: function(userKey, time, max) {
             T = new Twit(userKey);
             cacheTime = time.time;
@@ -92,14 +84,14 @@ if (Meteor.isServer) {
 
 if (Meteor.isClient) {
 
-    Template.twitterPackage.onCreated(function() {
+    Template.tweetRetrieve.onCreated(function() {
         this.subscribe("tweets", {
             screen_name: this.data.query,
             count: this.data.count
         });
     })
 
-    Template.twitterPackage.onRendered(function() {
+    Template.tweetRetrieve.onRendered(function() {
         var username = this.data.query;
         Meteor.call("grabResults", username, function(err) {
             if (err) {
@@ -108,7 +100,7 @@ if (Meteor.isClient) {
         })
     })
 
-    Template.twitterPackage.helpers({
+    Template.tweetRetrieve.helpers({
         tweets: function() {
             return Tweets.find({
                 screen_name: this.query

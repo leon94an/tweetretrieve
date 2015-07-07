@@ -15,18 +15,14 @@ Package.onUse(function(api) {
     ], ['client','server']);
 
     api.addFiles([
-        'twitterpackage.html',
-        'twitterpackage.js'
+        'tweetretrieve.html',
+        'tweetretrieve.js'
     ], ['client', 'server']);
 
-    api.export('twitterPackage',['server']);
+    api.export('tweetRetrieve',['server']);
 });
 
-// Package.onTest(function(api) {
-//   api.use('tinytest');
-//   api.use('leon94an:twitterpackage');
-//   api.addFiles('twitterpackage-tests.js');
-// });
+
 
 Npm.depends({
     'twit': '1.1.20'
