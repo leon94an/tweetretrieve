@@ -35,3 +35,5 @@ The username field is the screen name of the twitter user being queried, while c
 
 ## Author
 Leon An, July 2015
+
+MIT license
