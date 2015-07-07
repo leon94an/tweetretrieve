@@ -7,7 +7,7 @@ if (Meteor.isServer) {
         return Tweets.find({
             screen_name: options.screen_name
         }, {
-            limit: options.count
+            limit: parseInt(options.count) || 5
         });
     });
 
@@ -107,7 +107,7 @@ if (Meteor.isClient) {
             return Tweets.find({
                 screen_name: this.username
             }, {
-                limit: this.count
+                limit: parseInt(this.count) || 5
             });
         }
     })
