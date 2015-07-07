@@ -18,12 +18,15 @@ if (Meteor.isServer) {
 
     tweetRetrieve = {
         init: function(entry) {
+            if(!entry.oath){
+                return new Meteor.Error("Missing oath parameter.");
+            }
             T = new Twit(entry.oath);
-            cacheTime = entry.cacheDuration || 1000*60;
+            cacheTime = entry.cacheDuration || 1000 * 60;
             maxTweets = entry.maximumTweets || 100;
         }
 
-    }; 
+    };
 
     var getTweets = function(username, callback) {
         T.get('statuses/user_timeline', {
@@ -59,8 +62,6 @@ if (Meteor.isServer) {
         grabResults: function(twittername) {
             var twe = Meteor.wrapAsync(getTweets);
             try {
-                // var num= Tweets.find({screen_name: twittername}).count();
-                // var diff= maxTweets-num;
                 if (typeof tweetCache[twittername] == 'undefined') {
                     var currTime = new Date();
                     tweetCache[twittername] = currTime;
@@ -75,7 +76,7 @@ if (Meteor.isServer) {
                     storeTweets(tweeters);
                 }
             } catch (error) {
-                console.log("Could not find request.")
+                console.log("twitterretrieve",error)
             }
             return false;
         }
@@ -87,13 +88,13 @@ if (Meteor.isClient) {
 
     Template.tweetRetrieve.onCreated(function() {
         this.subscribe("tweets", {
-            screen_name: this.data.query,
+            screen_name: this.data.username,
             count: this.data.count
         });
     })
 
     Template.tweetRetrieve.onRendered(function() {
-        var username = this.data.query;
+        var username = this.data.username;
         Meteor.call("grabResults", username, function(err) {
             if (err) {
                 console.log(err);
@@ -104,7 +105,7 @@ if (Meteor.isClient) {
     Template.tweetRetrieve.helpers({
         tweets: function() {
             return Tweets.find({
-                screen_name: this.query
+                screen_name: this.username
             }, {
                 limit: this.count
             });

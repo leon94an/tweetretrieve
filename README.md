@@ -11,11 +11,11 @@ This TwitterPackage provides developers a simple API for querying twitter userna
 ## Usage
 
 On the Server-side:
-```
+```javascript
 if (Meteor.isServer) {
     tweetRetrieve.init({
-        cacheDuration: xxx,
-        maximumTweets: xxx,
+        cacheDuration: xxx, // cache duration in milliseconds
+        maximumTweets: xxx, // maximum number of stored tweets per query
         oath: {
             consumer_key: 'xxx', // API key
             consumer_secret: 'xxx', // API secret
@@ -29,9 +29,9 @@ OAuth authentication keys need to be provided by the user in order to receive ac
 
 Queries can be returned by calling the tweetRetrieve template as such:
 ```
-{{>tweetRetrieve query="VICE" count=5}}
+{{>tweetRetrieve username="VICE" count=5}}
 ```
-The query field is the screen name of the twitter user being queried, while count is the number tweets to be returned.
+The username field is the screen name of the twitter user being queried, while count is the number tweets to be returned.
 
 ## Author
 Leon An, July 2015
