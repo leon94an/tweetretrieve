@@ -6,5 +6,5 @@ This TwitterPackage provides users the functionality of inputting a twitter user
 
 ## How to use
 
-All the functionality is included within the package. OAuth authentication keys need to be provided by the user in order to receive access to the twitter API. This can be done by inputting the neccesary keys into the "keys" field within twitterpackage.js.
+All the functionality is included within the package. OAuth authentication keys need to be provided by the user in order to receive access to the twitter API. This can be within the project level using the twitterpackage.init({}) function. The number of tweets stored for a particular query is capped at 100.
 

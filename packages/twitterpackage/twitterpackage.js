@@ -2,10 +2,10 @@ Tweets = new Mongo.Collection("tweets")
 
 if (Meteor.isServer) {
 
-    Meteor.publish("tweets", function(options){
+    Meteor.publish("tweets", function(options) {
         return Tweets.find({
             screen_name: options.screen_name
-        },{
+        }, {
             limit: options.count
         });
     });
@@ -24,10 +24,10 @@ if (Meteor.isServer) {
 
 
     twitterPackage = {
-        init: function(userKey, time,max) {
-            T= new Twit(userKey);
-            cacheTime=time.time;
-            maxTweets=max.maximum;
+        init: function(userKey, time, max) {
+            T = new Twit(userKey);
+            cacheTime = time.time;
+            maxTweets = max.maximum;
         }
 
     };
@@ -56,36 +56,35 @@ if (Meteor.isServer) {
             });
         }
     }
- 
+
 
 
 
     tweetCache = {};
 
-    Meteor.methods({ 
+    Meteor.methods({
         grabResults: function(twittername) {
             var twe = Meteor.wrapAsync(getTweets);
-            try { 
+            try {
                 // var num= Tweets.find({screen_name: twittername}).count();
                 // var diff= maxTweets-num;
-                if (typeof tweetCache[twittername] == 'undefined') { 
-                    var currTime=new Date();
+                if (typeof tweetCache[twittername] == 'undefined') {
+                    var currTime = new Date();
                     tweetCache[twittername] = currTime;
                     var tweeters = twe(twittername);
-                    storeTweets(tweeters);   
-                }     
-                else if((Math.abs(new Date().getTime() - tweetCache[twittername]) > cacheTime)){ 
+                    storeTweets(tweeters);
+                } else if ((Math.abs(new Date().getTime() - tweetCache[twittername]) > cacheTime)) {
                     Tweets.remove({
                         screen_name: twittername
                     });
                     tweetCache[twittername] = new Date();
                     var tweeters = twe(twittername);
                     storeTweets(tweeters);
-                }  
+                }
             } catch (error) {
                 console.log("Could not find request.")
             }
-            return false; 
+            return false;
         }
     });
 }
