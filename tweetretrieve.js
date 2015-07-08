@@ -4,13 +4,13 @@ if (Meteor.isServer) {
 
     Twit = Npm.require('twit');
 
-    // Meteor.publish("tweets", function(options) {
-    //     return Tweets.find({
-    //         screen_name: options.screen_name
-    //     }, {
-    //         limit: parseInt(options.count) || 5
-    //     });
-    // });
+    Meteor.publish("tweets", function(options) {
+        return Tweets.find({
+            query: options.query
+        }, {
+            limit: parseInt(options.count) || 5
+        });
+    });
 
     var T;
     var cacheTime;
@@ -79,23 +79,24 @@ if (Meteor.isServer) {
             var twe = Meteor.wrapAsync(getTweets);
             var queryName;
             if ("username" in query) {
-                queryName=query["username"];
+                queryName = query["username"];
             }
             if ("keyword" in query) {
-                queryName=query["keyword"];
+                queryName = query["keyword"];
             }
+
             try {
-                if (typeof tweetCache[query] == 'undefined') {
+                if (typeof tweetCache[queryName] == 'undefined') {
                     var currTime = new Date();
-                    tweetCache[query] = currTime;
+                    tweetCache[queryName] = currTime;
                     var tweeters = twe(query);
                     storeTweets(tweeters, queryName);
-                } else if ((Math.abs(new Date().getTime() - tweetCache[query]) > cacheTime)) {
+                } else if ((Math.abs(new Date().getTime() - tweetCache[queryName]) > cacheTime)) {
                     Tweets.remove({
                         query: queryName
                     })
-                    tweetCache[item] = new Date();
-                    var tweeters = twe(queryName);
+                    tweetCache[queryName] = new Date();
+                    var tweeters = twe(query);
                     storeTweets(tweeters, queryName);
                 }
             } catch (error) {
@@ -109,12 +110,20 @@ if (Meteor.isServer) {
 
 if (Meteor.isClient) {
 
-    // Template.tweetRetrieve.onCreated(function() {
-    //     this.subscribe("tweets", {
-    //         screen_name: this.data.username,
-    //         count: this.data.count
-    //     });
-    // })
+    Template.tweetRetrieve.onCreated(function() {
+        var queryName;
+        if ("username" in this.data) {
+            queryName = this.data["username"];
+        }
+        if ("keyword" in this.data) {
+            queryName = this.data["keyword"];
+        }
+
+        this.subscribe("tweets", {
+            query: queryName,
+            count: this.data["count"]
+        });
+    })
 
     Template.tweetRetrieve.onRendered(function() {
         var query = this.data;
@@ -128,12 +137,11 @@ if (Meteor.isClient) {
     Template.tweetRetrieve.helpers({
         tweets: function() {
             var queryName;
-            console.log(this);
             if ("username" in this) {
-                queryName=this["username"];
+                queryName = this["username"];
             }
             if ("keyword" in this) {
-                queryName=this["keyword"];
+                queryName = this["keyword"];
             }
             return Tweets.find({
                 query: queryName
@@ -169,6 +177,9 @@ if (Meteor.isClient) {
             parser.linkifyURLs();
             parser.linkifyHashTags();
             return parser.getHTML();
+        },
+        username: function() {
+            return this.username;
         },
         time: function() {
             var time = new Date(this.time);
