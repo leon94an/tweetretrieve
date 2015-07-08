@@ -2,20 +2,25 @@
 
 <body>
     <h1>TwitterFeed</h1>
+    {{>feed}}
+</body>
+
+
+<template name="feed">
     <div class="row">
         <div class="col-sm-6">
-            {{>tweetRetrieve username="VICE" count=5}}
+            {{>tweetRetrieve query}}
         </div>
-        <div class="col-sm-6">
+<!--         <div class="col-sm-6">
             {{>tweetRetrieve username="vox" count=5}}
-        </div>
+        </div> -->
     </div>
-    <div class="row">
+   <!--  <div class="row">
         <div class="col-sm-6">
             {{>tweetRetrieve username="TIME" count=10}}
         </div>
         <div class="col-sm-6">
             {{>tweetRetrieve username="nytimes" count=10}}
         </div>
-    </div>
-</body>
+    </div> -->
+</template>

@@ -1,11 +1,8 @@
 <template name="tweetRetrieve">
-
     <ul class="list-group">
         {{#each tweets}} {{> tweetItem}} {{/each}}
     </ul>
 </template>
-
-
 <template name="tweetSubmit">
     <form class="form-inline">
         <div class="form-group">
@@ -17,11 +14,17 @@
         <input type="submit" value="Submit" class="btn btn-primary" />
     </form>
 </template>
-
-
 <template name="tweetItem">
-    <li class="list-group-item">
-    		<h4>{{../query}}</h4><img src="{{image}}">
-        <h4>Message: {{{message}}}</h4><h5>{{{time}}}</h5>
+    <li class="list-group-item tweet-retriever-item" >
+        <div class="row">
+            <div class="col-sm-1">
+                <img src="{{image}}" class="avatar">
+            </div>
+            <div class="col-sm-11">
+                <h4>{{../username}}</h4>
+                <h4>Message: {{{message}}}</h4>
+                <h5>{{{time}}}</h5>
+            </div>
+        </div>
     </li>
 </template>

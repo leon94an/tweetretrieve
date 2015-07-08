@@ -16,7 +16,8 @@ Package.onUse(function(api) {
 
     api.addFiles([
         'tweetretrieve.html',
-        'tweetretrieve.js'
+        'tweetretrieve.js',
+        'tweetretrieve.css'
     ], ['client', 'server']);
 
     api.export('tweetRetrieve',['server']);
