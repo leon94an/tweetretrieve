@@ -49,7 +49,7 @@ if (Meteor.isServer) {
                 function(err, data) {
                     callback(err, data.statuses);
                 }
-            );
+            );   
         }
     }
 
@@ -110,7 +110,7 @@ if (Meteor.isServer) {
 
 if (Meteor.isClient) {
 
-    Template.tweetRetrieve.onCreated(function() {
+    Template.tweetRetrieve.onRendered(function() {
         var queryName;
         if ("username" in this.data) {
             queryName = this.data["username"];

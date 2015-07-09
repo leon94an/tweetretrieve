@@ -15,7 +15,7 @@ if (Meteor.isClient) {
     Template.feed.helpers({
         query: function() {
             return {
-                username: "vox",
+                username: "times",
                 count: 5
             }
         }
