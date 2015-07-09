@@ -12,7 +12,7 @@ Package.onUse(function(api) {
         'templating',
         'coffeescript',
         'mongo',
-    ], ['client','server']);
+    ], ['client', 'server']);
 
     api.addFiles([
         'tweetretrieve.html',
@@ -20,10 +20,14 @@ Package.onUse(function(api) {
         'tweetretrieve.css'
     ], ['client', 'server']);
 
-    api.export('tweetRetrieve',['server']);
+    api.export(['tweetRetrieve','Tweets'], ['server']);
 });
 
-
+Package.onTest(function(api) {
+    api.use('leon94an:tweetretrieve', ['client', 'server']);
+    api.use(['tinytest', 'test-helpers'], ['client', 'server']);
+    api.addFiles('test/test.js', ['client', 'server']);
+})
 
 Npm.depends({
     'twit': '1.1.20'

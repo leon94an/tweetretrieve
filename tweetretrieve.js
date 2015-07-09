@@ -1,5 +1,18 @@
 Tweets = new Mongo.Collection("tweets")
 
+
+
+makeQuery = function(item) {
+    var queryName;
+    if ("username" in item) {
+        queryName = "username_"+item["username"];
+    }
+    if ("keyword" in item) {
+        queryName = "keyword_"+item["keyword"];
+    }
+    return queryName;
+}
+
 if (Meteor.isServer) {
 
     Twit = Npm.require('twit');
@@ -49,7 +62,7 @@ if (Meteor.isServer) {
                 function(err, data) {
                     callback(err, data.statuses);
                 }
-            );   
+            );
         }
     }
 
@@ -77,13 +90,7 @@ if (Meteor.isServer) {
     Meteor.methods({
         grabResults: function(query) {
             var twe = Meteor.wrapAsync(getTweets);
-            var queryName;
-            if ("username" in query) {
-                queryName = query["username"];
-            }
-            if ("keyword" in query) {
-                queryName = query["keyword"];
-            }
+            var queryName=makeQuery(query);
 
             try {
                 if (typeof tweetCache[queryName] == 'undefined') {
@@ -108,16 +115,11 @@ if (Meteor.isServer) {
 }
 
 
+
 if (Meteor.isClient) {
 
     Template.tweetRetrieve.onRendered(function() {
-        var queryName;
-        if ("username" in this.data) {
-            queryName = this.data["username"];
-        }
-        if ("keyword" in this.data) {
-            queryName = this.data["keyword"];
-        }
+        var queryName=makeQuery(this.data);
 
         this.subscribe("tweets", {
             query: queryName,
@@ -130,19 +132,13 @@ if (Meteor.isClient) {
         Meteor.call("grabResults", query, function(err) {
             if (err) {
                 console.log(err);
-            }
+            }  
         })
     })
 
     Template.tweetRetrieve.helpers({
         tweets: function() {
-            var queryName;
-            if ("username" in this) {
-                queryName = this["username"];
-            }
-            if ("keyword" in this) {
-                queryName = this["keyword"];
-            }
+            var queryName=makeQuery(this);
             return Tweets.find({
                 query: queryName
             }, {
