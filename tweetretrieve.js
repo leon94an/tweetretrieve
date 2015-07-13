@@ -18,6 +18,7 @@ if (Meteor.isServer) {
     Twit = Npm.require('twit');
 
     Meteor.publish("tweets", function(options) {
+        console.log("got",options,this);
         return Tweets.find({
             query: options.query
         }, {

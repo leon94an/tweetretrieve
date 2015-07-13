@@ -20,13 +20,18 @@ Package.onUse(function(api) {
         'tweetretrieve.css'
     ], ['client', 'server']);
 
-    api.export(['tweetRetrieve','Tweets'], ['server']);
+    api.export(['tweetRetrieve'], ['server']);
 });
 
 Package.onTest(function(api) {
+    api.use(['tinytest', 'test-helpers', 'mongo','dburles:mongo-collection-instances'], ['client', 'server']);
     api.use('leon94an:tweetretrieve', ['client', 'server']);
-    api.use(['tinytest', 'test-helpers'], ['client', 'server']);
+
     api.addFiles('test/test.js', ['client', 'server']);
+    api.addFiles('test/test_key.json', ['server']);
+
+        api.export(['Tweets'], ['client']); 
+
 })
 
 Npm.depends({
